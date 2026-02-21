@@ -1,0 +1,116 @@
+{
+  "hero": {
+    "name": "Alex Morgan",
+    "title": "Software Engineer",
+    "description": "I build accessible, performant digital experiences for the web. Currently focused on crafting interfaces that blend thoughtful design with robust engineering.",
+    "cta": {
+      "label": "View my work",
+      "url": "#projects"
+    }
+  },
+  "about": {
+    "heading": "About",
+    "paragraphs": [
+      "I'm a developer passionate about building software that feels intuitive and performs beautifully. My work sits at the intersection of design and engineering, creating experiences that are meticulously built for performance and usability.",
+      "In my spare time, I contribute to open-source projects, experiment with creative coding, and explore the latest in web technologies."
+    ],
+    "highlights": [
+      { "label": "Years of Experience", "value": "5+" },
+      { "label": "Projects Completed", "value": "30+" },
+      { "label": "Open Source Contributions", "value": "50+" }
+    ]
+  },
+  "projects": [
+    {
+      "title": "Flux UI",
+      "description": "A component library built for speed. Composable, accessible primitives designed for modern web applications.",
+      "tags": ["TypeScript", "SolidJS", "Tailwind CSS"],
+      "url": "#",
+      "year": "2025"
+    },
+    {
+      "title": "Dataflow",
+      "description": "Real-time data visualization dashboard for monitoring distributed systems at scale.",
+      "tags": ["WebGL", "D3.js", "Go"],
+      "url": "#",
+      "year": "2024"
+    },
+    {
+      "title": "Synth",
+      "description": "A web-based synthesizer using the Web Audio API. Experiment with sounds directly in the browser.",
+      "tags": ["Web Audio", "Canvas", "TypeScript"],
+      "url": "#",
+      "year": "2024"
+    },
+    {
+      "title": "Markdown Writer",
+      "description": "A minimal, distraction-free writing tool focused on speed and a beautiful editing experience.",
+      "tags": ["Rust", "WebAssembly", "SolidJS"],
+      "url": "#",
+      "year": "2023"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Languages",
+      "items": ["TypeScript", "Rust", "Go", "Python"]
+    },
+    {
+      "category": "Frontend",
+      "items": ["SolidJS", "React", "Tailwind CSS", "Three.js"]
+    },
+    {
+      "category": "Backend",
+      "items": ["Node.js", "PostgreSQL", "Redis", "GraphQL"]
+    },
+    {
+      "category": "Tools",
+      "items": ["Git", "Docker", "Figma", "Linux"]
+    }
+  ],
+  "experience": [
+    {
+      "period": "2024 - Present",
+      "role": "Senior Frontend Engineer",
+      "company": "Vercel",
+      "description": "Building and maintaining the core web infrastructure, working on developer-facing tools and the platform dashboard.",
+      "tags": ["TypeScript", "React", "Next.js"]
+    },
+    {
+      "period": "2022 - 2024",
+      "role": "Software Engineer",
+      "company": "Stripe",
+      "description": "Developed payment processing interfaces and worked on the design system powering the Stripe Dashboard.",
+      "tags": ["TypeScript", "React", "Ruby"]
+    },
+    {
+      "period": "2020 - 2022",
+      "role": "Frontend Developer",
+      "company": "Linear",
+      "description": "Contributed to the issue tracking interface, focusing on performance optimization and accessibility.",
+      "tags": ["TypeScript", "React", "GraphQL"]
+    }
+  ],
+  "contact": {
+    "heading": "Get in touch",
+    "description": "If you would like to discuss a project or just say hi, I'm always open to a conversation.",
+    "email": "hello@alexmorgan.dev",
+    "socials": [
+      {
+        "platform": "GitHub",
+        "url": "https://github.com",
+        "label": "github.com/alexmorgan"
+      },
+      {
+        "platform": "LinkedIn",
+        "url": "https://linkedin.com",
+        "label": "linkedin.com/in/alexmorgan"
+      },
+      {
+        "platform": "X",
+        "url": "https://x.com",
+        "label": "x.com/alexmorgan"
+      }
+    ]
+  }
+}

@@ -1,15 +1,68 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #0a0f0d;
-  --fg: #e8ede9;
-  --muted: #7c8a80;
-  --accent: #66d9c2;
-  --surface: #111916;
-  --border: #1e2b24;
+  --bg: #e6ebf1;
+  --bg-elevated: rgba(242, 246, 250, 0.9);
+  --fg: #14202b;
+  --fg-soft: #314252;
+  --muted: #617080;
+  --accent: #2f5d7c;
+  --accent-contrast: #f7fafc;
+  --surface: rgba(252, 253, 255, 0.78);
+  --surface-strong: rgba(255, 255, 255, 0.94);
+  --border: rgba(56, 74, 92, 0.14);
+  --sand: #b5c0cd;
+  --sand-deep: #506273;
+  --slate: #7b8fa4;
+  --shadow-soft: 0 18px 50px rgba(29, 43, 58, 0.08);
+  --shadow-card: 0 24px 60px rgba(29, 43, 58, 0.12);
+  --bg-gradient: radial-gradient(circle at top left, rgba(47, 93, 124, 0.12), transparent 32%),
+    radial-gradient(circle at 80% 18%, rgba(123, 143, 164, 0.12), transparent 26%),
+    linear-gradient(180deg, #f5f8fb 0%, #edf2f6 44%, #e6ebf1 100%);
+  --bg-orb-left: rgba(47, 93, 124, 0.08);
+  --bg-orb-right: rgba(123, 143, 164, 0.12);
+  --bg-overlay: linear-gradient(
+    180deg,
+    rgba(245, 248, 251, 0.04),
+    rgba(230, 235, 241, 0.1) 38%,
+    rgba(214, 224, 233, 0.18) 100%
+  );
+  --life-cell: 52, 88, 114;
+  --life-blend: multiply;
 
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root[data-theme="dark"] {
+  --bg: #09111a;
+  --bg-elevated: rgba(11, 19, 29, 0.86);
+  --fg: #edf4fb;
+  --fg-soft: #c2cfdd;
+  --muted: #89a0b6;
+  --accent: #7cb7db;
+  --accent-contrast: #081019;
+  --surface: rgba(11, 19, 29, 0.74);
+  --surface-strong: rgba(17, 28, 42, 0.9);
+  --border: rgba(144, 177, 206, 0.16);
+  --sand: #f0a46f;
+  --sand-deep: #d88d55;
+  --slate: #8ba8c0;
+  --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.28);
+  --shadow-card: 0 24px 60px rgba(0, 0, 0, 0.36);
+  --bg-gradient: radial-gradient(circle at top left, rgba(86, 138, 177, 0.14), transparent 32%),
+    radial-gradient(circle at 80% 18%, rgba(240, 164, 111, 0.08), transparent 26%),
+    linear-gradient(180deg, #081019 0%, #0c1621 44%, #101b28 100%);
+  --bg-orb-left: rgba(86, 138, 177, 0.14);
+  --bg-orb-right: rgba(240, 164, 111, 0.12);
+  --bg-overlay: linear-gradient(
+    180deg,
+    rgba(8, 16, 25, 0.08),
+    rgba(10, 18, 28, 0.16) 38%,
+    rgba(14, 24, 36, 0.22) 100%
+  );
+  --life-cell: 124, 183, 219;
+  --life-blend: screen;
 }
 
 @theme inline {
@@ -17,13 +70,7 @@
   --font-mono: var(--font-mono);
 }
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
 
 html {
   scroll-behavior: smooth;
@@ -37,11 +84,67 @@ body {
   color: var(--fg);
   line-height: 1.6;
   overflow-x: hidden;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+a {
+  text-decoration: none;
+}
+
+#root {
+  position: relative;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(47, 93, 124, 0.2);
+  background: rgba(47, 93, 124, 0.08);
+  padding: 0.55rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(47, 93, 124, 0.2);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--fg-soft);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(47, 93, 124, 0.8);
+  outline-offset: 3px;
 }
 
 ::selection {
   background-color: var(--accent);
-  color: var(--bg);
+  color: var(--accent-contrast);
 }
 
 ::-webkit-scrollbar {
@@ -49,14 +152,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 72%, white 28%);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: color-mix(in srgb, var(--fg) 18%, transparent);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: color-mix(in srgb, var(--fg) 28%, transparent);
 }

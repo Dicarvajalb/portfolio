@@ -1,200 +1,269 @@
-import { onMount, onCleanup } from "solid-js";
-import * as THREE from "three";
+import { onCleanup, onMount } from "solid-js";
 
-export default function ParticleBackground() {
-  let containerRef!: HTMLDivElement;
+type CellOffset = readonly [number, number];
+
+const PATTERNS = {
+  lightweightSpaceship: [
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+    [0, 1],
+    [4, 1],
+    [4, 2],
+    [0, 3],
+    [3, 3],
+  ],
+} as const satisfies Record<string, readonly CellOffset[]>;
+
+export default function Background() {
+  let canvasRef!: HTMLCanvasElement;
 
   onMount(() => {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      containerRef.clientWidth / containerRef.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 3;
+    const canvas = canvasRef;
+    const context = canvas.getContext("2d");
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-    });
-    renderer.setSize(containerRef.clientWidth, containerRef.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    containerRef.appendChild(renderer.domElement);
-
-    // Particle system
-    const particleCount = 1500;
-    const positions = new Float32Array(particleCount * 3);
-    const velocities = new Float32Array(particleCount * 3);
-    const sizes = new Float32Array(particleCount);
-
-    for (let i = 0; i < particleCount; i++) {
-      const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 10;
-      positions[i3 + 1] = (Math.random() - 0.5) * 10;
-      positions[i3 + 2] = (Math.random() - 0.5) * 8;
-
-      velocities[i3] = (Math.random() - 0.5) * 0.002;
-      velocities[i3 + 1] = (Math.random() - 0.5) * 0.002;
-      velocities[i3 + 2] = (Math.random() - 0.5) * 0.001;
-
-      sizes[i] = Math.random() * 2 + 0.5;
+    if (!context) {
+      return;
     }
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+    let width = 0;
+    let height = 0;
+    let cell = 0;
+    let columns = 0;
+    let rows = 0;
+    let grid = new Uint8Array(0);
+    let nextGrid = new Uint8Array(0);
+    let animationFrame = 0;
+    let lastFrameTime = 0;
+    let generation = 0;
+    let stagnantGenerations = 0;
+    let isVisible = !document.hidden;
+    const frameInterval = 1000 / 7;
 
-    // Custom shader material for soft glowing particles
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        uTime: { value: 0 },
-        uColor: { value: new THREE.Color(0.4, 0.85, 0.75) }, // teal accent
-      },
-      vertexShader: `
-        attribute float size;
-        uniform float uTime;
-        varying float vAlpha;
+    const getIndex = (column: number, row: number) => row * columns + column;
 
-        void main() {
-          vec3 pos = position;
-          pos.x += sin(uTime * 0.3 + position.y * 0.5) * 0.1;
-          pos.y += cos(uTime * 0.2 + position.x * 0.4) * 0.1;
-          
-          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-          gl_PointSize = size * (200.0 / -mvPosition.z);
-          gl_Position = projectionMatrix * mvPosition;
-
-          vAlpha = smoothstep(8.0, 2.0, -mvPosition.z) * 0.6;
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 uColor;
-        varying float vAlpha;
-
-        void main() {
-          float dist = length(gl_PointCoord - vec2(0.5));
-          if (dist > 0.5) discard;
-          float strength = 1.0 - (dist * 2.0);
-          strength = pow(strength, 3.0);
-          gl_FragColor = vec4(uColor, strength * vAlpha);
-        }
-      `,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    });
-
-    const particles = new THREE.Points(geometry, material);
-    scene.add(particles);
-
-    // Floating wireframe geometry
-    const icoGeometry = new THREE.IcosahedronGeometry(1.2, 1);
-    const icoMaterial = new THREE.MeshBasicMaterial({
-      color: 0x66d9c2,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.08,
-    });
-    const icosahedron = new THREE.Mesh(icoGeometry, icoMaterial);
-    scene.add(icosahedron);
-
-    const torusGeometry = new THREE.TorusGeometry(2, 0.02, 16, 100);
-    const torusMaterial = new THREE.MeshBasicMaterial({
-      color: 0x66d9c2,
-      transparent: true,
-      opacity: 0.06,
-    });
-    const torus = new THREE.Mesh(torusGeometry, torusMaterial);
-    torus.rotation.x = Math.PI * 0.3;
-    scene.add(torus);
-
-    // Mouse interaction
-    let mouseX = 0;
-    let mouseY = 0;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    // Animation
-    const clock = new THREE.Clock();
-    let animationId: number;
-
-    const animate = () => {
-      animationId = requestAnimationFrame(animate);
-      const elapsed = clock.getElapsedTime();
-
-      material.uniforms.uTime.value = elapsed;
-
-      // Update particle positions
-      const posArray = geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        posArray[i3] += velocities[i3];
-        posArray[i3 + 1] += velocities[i3 + 1];
-        posArray[i3 + 2] += velocities[i3 + 2];
-
-        // Wrap around
-        if (Math.abs(posArray[i3]) > 5) velocities[i3] *= -1;
-        if (Math.abs(posArray[i3 + 1]) > 5) velocities[i3 + 1] *= -1;
-        if (Math.abs(posArray[i3 + 2]) > 4) velocities[i3 + 2] *= -1;
+    const wrap = (value: number, max: number) => {
+      if (value < 0) {
+        return max - 1;
       }
-      geometry.attributes.position.needsUpdate = true;
 
-      // Rotate geometries
-      icosahedron.rotation.x = elapsed * 0.1 + mouseY * 0.3;
-      icosahedron.rotation.y = elapsed * 0.15 + mouseX * 0.3;
+      if (value >= max) {
+        return 0;
+      }
 
-      torus.rotation.z = elapsed * 0.05;
-      torus.rotation.x = Math.PI * 0.3 + Math.sin(elapsed * 0.2) * 0.1;
-
-      // Smooth camera follow
-      camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.02;
-      camera.position.y += (mouseY * 0.3 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
-
-      renderer.render(scene, camera);
+      return value;
     };
 
-    animate();
-
-    // Resize handler
-    const handleResize = () => {
-      const width = containerRef.clientWidth;
-      const height = containerRef.clientHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
+    const clearGrid = () => {
+      grid.fill(0);
+      nextGrid.fill(0);
     };
 
-    window.addEventListener("resize", handleResize);
+    const stampPattern = (
+      pattern: readonly CellOffset[],
+      originColumn: number,
+      originRow: number
+    ) => {
+      for (const [columnOffset, rowOffset] of pattern) {
+        const column = wrap(originColumn + columnOffset, columns);
+        const row = wrap(originRow + rowOffset, rows);
+        grid[getIndex(column, row)] = 1;
+      }
+    };
+
+    const loadPreset = () => {
+      clearGrid();
+      const pattern = PATTERNS.lightweightSpaceship;
+      const patternWidth = Math.max(...pattern.map(([column]) => column)) + 1;
+      const patternHeight = Math.max(...pattern.map(([, row]) => row)) + 1;
+      const maxColumnStart = Math.max(0, columns - patternWidth);
+
+      for (let originRow = 0; originRow <= rows - patternHeight; originRow += 1) {
+        const originColumn =
+          maxColumnStart === 0 ? 0 : (originRow * (patternWidth + 2)) % (maxColumnStart + 1);
+
+        stampPattern(pattern, originColumn, originRow);
+      }
+
+      generation = 0;
+      stagnantGenerations = 0;
+    };
+
+    const buildWorld = () => {
+      columns = Math.max(1, Math.ceil(width / cell));
+      rows = Math.max(1, Math.ceil(height / cell));
+      grid = new Uint8Array(columns * rows);
+      nextGrid = new Uint8Array(columns * rows);
+      loadPreset();
+    };
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      cell = width < 768 ? 14 : 18;
+      buildWorld();
+      draw();
+    };
+
+    const isInteractiveTarget = (target: EventTarget | null) =>
+      target instanceof Element &&
+      Boolean(target.closest("a, button, input, textarea, select, summary, label"));
+
+    const reviveCell = (clientX: number, clientY: number) => {
+      const column = Math.floor(clientX / cell);
+      const row = Math.floor(clientY / cell);
+
+      if (column < 0 || column >= columns || row < 0 || row >= rows) {
+        return;
+      }
+
+      grid[getIndex(column, row)] = 1;
+      stagnantGenerations = 0;
+      draw();
+    };
+
+    const countNeighbors = (column: number, row: number) => {
+      let neighbors = 0;
+
+      for (let rowOffset = -1; rowOffset <= 1; rowOffset += 1) {
+        for (let columnOffset = -1; columnOffset <= 1; columnOffset += 1) {
+          if (columnOffset === 0 && rowOffset === 0) {
+            continue;
+          }
+
+          const wrappedColumn = wrap(column + columnOffset, columns);
+          const wrappedRow = wrap(row + rowOffset, rows);
+          neighbors += grid[getIndex(wrappedColumn, wrappedRow)];
+        }
+      }
+
+      return neighbors;
+    };
+
+    const step = () => {
+      let changedCells = 0;
+      let aliveCells = 0;
+
+      for (let row = 0; row < rows; row += 1) {
+        for (let column = 0; column < columns; column += 1) {
+          const index = getIndex(column, row);
+          const cellIsAlive = grid[index];
+          const neighbors = countNeighbors(column, row);
+          const nextIsAlive =
+            neighbors === 3 || (cellIsAlive === 1 && neighbors === 2) ? 1 : 0;
+
+          nextGrid[index] = nextIsAlive;
+          aliveCells += nextIsAlive;
+
+          if (nextIsAlive !== cellIsAlive) {
+            changedCells += 1;
+          }
+        }
+      }
+
+      [grid, nextGrid] = [nextGrid, grid];
+      generation += 1;
+      stagnantGenerations = changedCells === 0 ? stagnantGenerations + 1 : 0;
+
+      if (
+        aliveCells === 0 ||
+        aliveCells > grid.length * 0.52 ||
+        stagnantGenerations > 8 ||
+        generation > 320
+      ) {
+        loadPreset();
+      }
+    };
+
+    const draw = () => {
+      context.clearRect(0, 0, width, height);
+      const styles = getComputedStyle(document.documentElement);
+      const cellColor = styles.getPropertyValue("--life-cell").trim() || "52, 88, 114";
+
+      for (let row = 0; row < rows; row += 1) {
+        for (let column = 0; column < columns; column += 1) {
+          const index = getIndex(column, row);
+
+          if (grid[index] === 0) {
+            continue;
+          }
+
+          const x = column * cell;
+          const y = row * cell;
+          const parity = (row + column + generation) % 4;
+          const alpha = 0 + parity * 0.015;
+
+          context.fillStyle = `rgba(${cellColor}, ${alpha})`;
+          context.fillRect(x + 1, y + 1, cell - 2, cell - 2);
+        }
+      }
+    };
+
+    const tick = (frameTime: number) => {
+      if (!isVisible) {
+        animationFrame = window.requestAnimationFrame(tick);
+        return;
+      }
+
+      if (frameTime - lastFrameTime < frameInterval) {
+        animationFrame = window.requestAnimationFrame(tick);
+        return;
+      }
+
+      lastFrameTime = frameTime;
+      step();
+      draw();
+      animationFrame = window.requestAnimationFrame(tick);
+    };
+
+    const handleVisibilityChange = () => {
+      isVisible = !document.hidden;
+      lastFrameTime = 0;
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      if (isInteractiveTarget(event.target)) {
+        return;
+      }
+
+      reviveCell(event.clientX, event.clientY);
+    };
+
+    resize();
+    animationFrame = window.requestAnimationFrame(tick);
+
+    window.addEventListener("resize", resize);
+    window.addEventListener("click", handleClick);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     onCleanup(() => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", handleResize);
-      renderer.dispose();
-      geometry.dispose();
-      material.dispose();
-      icoGeometry.dispose();
-      icoMaterial.dispose();
-      torusGeometry.dispose();
-      torusMaterial.dispose();
-      if (containerRef.contains(renderer.domElement)) {
-        containerRef.removeChild(renderer.domElement);
-      }
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("click", handleClick);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.cancelAnimationFrame(animationFrame);
     });
   });
 
   return (
-    <div
-      ref={containerRef}
-      class="fixed inset-0 -z-10"
-      aria-hidden="true"
-    />
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div class="absolute inset-0" style={{ background: "var(--bg-gradient)" }} />
+      <div
+        class="absolute left-[-10rem] top-[12rem] h-80 w-80 rounded-full blur-3xl"
+        style={{ background: "var(--bg-orb-left)" }}
+      />
+      <div
+        class="absolute right-[-8rem] top-[6rem] h-96 w-96 rounded-full blur-3xl"
+        style={{ background: "var(--bg-orb-right)" }}
+      />
+      <canvas
+        ref={canvasRef}
+        class="absolute inset-0 h-full w-full opacity-84"
+        style={{ "mix-blend-mode": "var(--life-blend)" }}
+      />
+      <div class="absolute inset-0" style={{ background: "var(--bg-overlay)" }} />
+    </div>
   );
 }

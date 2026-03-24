@@ -1,116 +1,285 @@
 {
-  "hero": {
-    "name": "Alex Morgan",
-    "title": "Software Engineer",
-    "description": "I build accessible, performant digital experiences for the web. Currently focused on crafting interfaces that blend thoughtful design with robust engineering.",
-    "cta": {
-      "label": "View my work",
-      "url": "#projects"
-    }
+  "defaultLocale": "en",
+  "localeLabels": {
+    "en": "EN",
+    "es": "ES"
   },
-  "about": {
-    "heading": "About",
-    "paragraphs": [
-      "I'm a developer passionate about building software that feels intuitive and performs beautifully. My work sits at the intersection of design and engineering, creating experiences that are meticulously built for performance and usability.",
-      "In my spare time, I contribute to open-source projects, experiment with creative coding, and explore the latest in web technologies."
-    ],
-    "highlights": [
-      { "label": "Years of Experience", "value": "5+" },
-      { "label": "Projects Completed", "value": "30+" },
-      { "label": "Open Source Contributions", "value": "50+" }
-    ]
-  },
-  "projects": [
-    {
-      "title": "Flux UI",
-      "description": "A component library built for speed. Composable, accessible primitives designed for modern web applications.",
-      "tags": ["TypeScript", "SolidJS", "Tailwind CSS"],
-      "url": "#",
-      "year": "2025"
-    },
-    {
-      "title": "Dataflow",
-      "description": "Real-time data visualization dashboard for monitoring distributed systems at scale.",
-      "tags": ["WebGL", "D3.js", "Go"],
-      "url": "#",
-      "year": "2024"
-    },
-    {
-      "title": "Synth",
-      "description": "A web-based synthesizer using the Web Audio API. Experiment with sounds directly in the browser.",
-      "tags": ["Web Audio", "Canvas", "TypeScript"],
-      "url": "#",
-      "year": "2024"
-    },
-    {
-      "title": "Markdown Writer",
-      "description": "A minimal, distraction-free writing tool focused on speed and a beautiful editing experience.",
-      "tags": ["Rust", "WebAssembly", "SolidJS"],
-      "url": "#",
-      "year": "2023"
-    }
-  ],
-  "skills": [
-    {
-      "category": "Languages",
-      "items": ["TypeScript", "Rust", "Go", "Python"]
-    },
-    {
-      "category": "Frontend",
-      "items": ["SolidJS", "React", "Tailwind CSS", "Three.js"]
-    },
-    {
-      "category": "Backend",
-      "items": ["Node.js", "PostgreSQL", "Redis", "GraphQL"]
-    },
-    {
-      "category": "Tools",
-      "items": ["Git", "Docker", "Figma", "Linux"]
-    }
-  ],
-  "experience": [
-    {
-      "period": "2024 - Present",
-      "role": "Senior Frontend Engineer",
-      "company": "Vercel",
-      "description": "Building and maintaining the core web infrastructure, working on developer-facing tools and the platform dashboard.",
-      "tags": ["TypeScript", "React", "Next.js"]
-    },
-    {
-      "period": "2022 - 2024",
-      "role": "Software Engineer",
-      "company": "Stripe",
-      "description": "Developed payment processing interfaces and worked on the design system powering the Stripe Dashboard.",
-      "tags": ["TypeScript", "React", "Ruby"]
-    },
-    {
-      "period": "2020 - 2022",
-      "role": "Frontend Developer",
-      "company": "Linear",
-      "description": "Contributed to the issue tracking interface, focusing on performance optimization and accessibility.",
-      "tags": ["TypeScript", "React", "GraphQL"]
-    }
-  ],
-  "contact": {
-    "heading": "Get in touch",
-    "description": "If you would like to discuss a project or just say hi, I'm always open to a conversation.",
-    "email": "hello@alexmorgan.dev",
-    "socials": [
-      {
-        "platform": "GitHub",
-        "url": "https://github.com",
-        "label": "github.com/alexmorgan"
+  "locales": {
+    "en": {
+      "meta": {
+        "title": "Diego Carvajal | Systems Engineer",
+        "description": "Systems Engineer building scalable web applications, backend systems, and AI-powered solutions with TypeScript, NestJS, and modern frontend tools."
       },
-      {
-        "platform": "LinkedIn",
-        "url": "https://linkedin.com",
-        "label": "linkedin.com/in/alexmorgan"
+      "nav": [
+        { "id": "about", "label": "About" },
+        { "id": "experience", "label": "Experience" },
+        { "id": "projects", "label": "Projects" },
+        { "id": "skills", "label": "Skills" },
+        { "id": "contact", "label": "Contact" }
+      ],
+      "hero": {
+        "eyebrow": "Systems Engineer",
+        "name": "Diego Carvajal",
+        "title": "I build scalable web applications, backend systems, and practical solutions.",
+        "description": "Systems Engineer with experience across full-stack delivery, production stabilization, and intelligent integrations. I enjoy building software that solves real operational problems.",
+        "primaryCta": {
+          "label": "View projects",
+          "url": "#projects"
+        },
+        "secondaryCta": {
+          "label": "Contact me",
+          "url": "#contact"
+        }
       },
-      {
-        "platform": "X",
-        "url": "https://x.com",
-        "label": "x.com/alexmorgan"
+      "about": {
+        "heading": "About",
+        "intro": "I work best on products that solve real problems, with practical decision-making, and a team-oriented mindset.",
+        "paragraphs": [
+          "I am a Systems Engineer with experience developing scalable web applications and backend systems using TypeScript, NestJS, relational databases, and modern frontend stacks.",
+          "I am especially interested in intelligent systems, API integrations, and automation. In remote Agile teams, I focus on delivering reliable software, stabilizing production environments, and keeping systems maintainable over time."
+        ],
+        "highlights": [
+          { "label": "Focus", "value": "Full Stack" },
+          { "label": "Backend", "value": "TypeScript + NestJS" },
+          { "label": "Location", "value": "Bogota D.C." }
+        ]
+      },
+      "experienceHeading": "Experience",
+      "experience": [
+        {
+          "period": "Jan 2025 - Jan 2026",
+          "role": "Software Engineer",
+          "company": "LAB101, Universidad Nacional de Colombia (UNAL)",
+          "description": "Led the development of 3 software applications for Gobernacion de Cundinamarca, replacing legacy software to reduce costs by more than 50 percent and improve internal delegation and entrepreneurship workflows. Also led production stabilization for interface, SSO, search, and CMS flows across 8 websites with testing and Scrum iterations.",
+          "tags": ["React.js", "TanStack", "Effector", "Zustand", "Strapi CMS", "Docker", "AWS"]
+        },
+        {
+          "period": "Jan 2024 - Dec 2024",
+          "role": "Software Engineer",
+          "company": "LAB101, Universidad Nacional de Colombia (UNAL)",
+          "description": "Led a team building a full-stack web application for chemical substance inventory management, enabling more than 400 laboratories to control stock with a reliable and scalable platform.",
+          "tags": ["React.js", ".NET", "PostgreSQL", "Effector.js", "Sass", "Styled Components", "Formik"]
+        },
+        {
+          "period": "2018 - 2023",
+          "role": "Systems Engineering Student",
+          "company": "Universidad Nacional de Colombia (UNAL)",
+          "description": "Built strong foundations in data structures, algorithm analysis, SQL database design, APIs, software architecture and software engineering while completing the Systems Engineering degree.",
+          "tags": ["Algorithms", "SQL", "APIs", "Software architecture", "Software engineering"]
+        }
+      ],
+      "projectsHeading": "Projects",
+      "projects": [
+        {
+          "title": "NestJs AuthN Template",
+          "year": "2026 - In progress",
+          "description": "Backend template to start a clean Nestjs project with a secure authentication API module",
+          "tags": ["Nest.js", "AJV (JSON Validator)", "PostgreSQL", "OWASP top 10", "OAuth", "JWT"],
+          "links": [
+            { "label": "Project details", "url": "https://github.com/Dicarvajalb/Authentication-template-with-Nestjs" }
+          ]
+        },
+        {
+          "title": "Flight Control Implementing Microservices",
+          "year": "2023",
+          "description": "Undergraduate project for flight monitoring with notifications, messaging, authentication, and HTTPS delivery. Built with a microservices architecture where four services communicate through an API gateway.",
+          "tags": ["Flutter", "Java Spring Boot", "PostgreSQL", "Node.js", "Express.js", "Microservices"],
+          "links": [
+            { "label": "Project details", "url": "#" }
+          ]
+        },
+        {
+          "title": "PathPhi - Learning Paths",
+          "year": "2021",
+          "description": "Web platform to visualize free online courses. I collaborated on the data model design, followed atomic design principles, and worked with gitflow-based collaboration.",
+          "tags": ["React.js", "Express.js", "PostgreSQL", "Node.js", "Atomic Design"],
+          "links": [
+            { "label": "Project details", "url": "#" }
+          ]
+        }
+        
+      ],
+      "skillsHeading": "Skills",
+      "skills": [
+        {
+          "category": "Frontend",
+          "items": ["React.js", "Solid.js", "Redux and Zustand", "Tailwind", "TypeScript", "Styled Components", "Sass", "Formik", "TanStack"]
+        },
+        {
+          "category": "Backend",
+          "items": ["NestJS", "Node.js", "Express.js", "Java Spring Boot", "OAuth", "API Design", "Microservices"]
+        },
+        {
+          "category": "Data and Infrastructure",
+          "items": ["PostgreSQL", "Strapi CMS", "Nginx", "Docker", "AWS", "CI/CD"]
+        },
+        {
+          "category": "Workflow and Foundations",
+          "items": ["Agile", "Scrum", "GitHub", "Unit testing", "Integration testing","Algorithms", "UML"]
+        }
+      ],
+      "contact": {
+        "sectionLabel": "Contact",
+        "heading": "Let's build reliable software that solves real problems.",
+        "description": "Open to software engineering opportunities, collaborative product teams, and projects involving scalable systems or AI integrations.",
+        "emailLabel": "Email",
+        "socialsLabel": "Profiles",
+        "email": "diegocarvalejo@gmail.com",
+        "socials": [
+          {
+            "platform": "GitHub",
+            "url": "https://github.com/dicarvajalb",
+            "label": "github.com/dicarvajalb"
+          },
+          {
+            "platform": "LinkedIn",
+            "url": "https://linkedin.com/in/dicarvajalb",
+            "label": "linkedin.com/in/dicarvajalb"
+          }
+        ]
+      },
+      "footer": {
+        "rights": "All rights reserved.",
+        "builtWith": "Built with SolidJS, TypeScript, Vite, and Tailwind CSS."
       }
-    ]
+    },
+    "es": {
+      "meta": {
+        "title": "Diego Carvajal | Ingeniero de Sistemas",
+        "description": "Ingeniero de Sistemas con experiencia en aplicaciones web escalables, sistemas backend y soluciones con IA usando TypeScript, NestJS y herramientas frontend modernas."
+      },
+      "nav": [
+        { "id": "about", "label": "Sobre mi" },
+        { "id": "experience", "label": "Experiencia" },
+        { "id": "projects", "label": "Proyectos" },
+        { "id": "skills", "label": "Habilidades" },
+        { "id": "contact", "label": "Contacto" }
+      ],
+      "hero": {
+        "eyebrow": "Ingeniero de Sistemas",
+        "name": "Diego Carvajal",
+        "title": "Construyo aplicaciones web escalables, sistemas backend y soluciones practicas.",
+        "description": "Ingeniero de Sistemas con experiencia en desarrollo full stack, estabilizacion en produccion e integraciones inteligentes. Disfruto crear software que resuelve problemas operativos reales.",
+        "primaryCta": {
+          "label": "Ver proyectos",
+          "url": "#projects"
+        },
+        "secondaryCta": {
+          "label": "Contactarme",
+          "url": "#contact"
+        }
+      },
+      "about": {
+        "heading": "Sobre mi",
+        "intro": "Trabajo mejor en productos que resuelven problemas reales, con decisiones practicas y una mentalidad colaborativa.",
+        "paragraphs": [
+          "Soy Ingeniero de Sistemas con experiencia desarrollando aplicaciones web escalables y sistemas backend usando TypeScript, NestJS, bases de datos relacionales y stacks frontend modernos.",
+          "Me interesan especialmente los sistemas inteligentes, las integraciones con APIs y la automatizacion. En equipos Agile remotos me enfoco en entregar software confiable, estabilizar entornos productivos y mantener los sistemas sostenibles en el tiempo."
+        ],
+        "highlights": [
+          { "label": "Enfoque", "value": "Full Stack" },
+          { "label": "Backend", "value": "TypeScript + NestJS" },
+          { "label": "Ubicacion", "value": "Bogota D.C." }
+        ]
+      },
+      "experienceHeading": "Experiencia",
+      "experience": [
+        {
+          "period": "Ene 2025 - Ene 2026",
+          "role": "Ingeniero de Software",
+          "company": "LAB101, Universidad Nacional de Colombia (UNAL)",
+          "description": "Lideré el desarrollo de 3 aplicaciones para la Gobernacion de Cundinamarca, reemplazando software de legado para reducir costos en mas del 50% y mejorar flujos internos de delegaciones y emprendimiento. Tambien lideré la estabilizacion en produccion de interfaz, SSO, buscador y CMS en 8 sitios web con pruebas e iteraciones Scrum.",
+          "tags": ["React.js", "TanStack", "Effector", "Zustand", "Strapi CMS", "Docker", "AWS"]
+        },
+        {
+          "period": "Ene 2024 - Dic 2024",
+          "role": "Ingeniero de Software",
+          "company": "LAB101, Universidad Nacional de Colombia (UNAL)",
+          "description": "Lideré un equipo que construyo una aplicacion full stack para gestionar inventarios de sustancias quimicas, permitiendo a mas de 400 laboratorios controlar su stock con una plataforma confiable y escalable.",
+          "tags": ["React.js", ".NET", "PostgreSQL", "Effector.js", "Sass", "Styled Components", "Formik"]
+        },
+        {
+          "period": "2018 - 2023",
+          "role": "Estudiante de Ingenieria de Sistemas",
+          "company": "Universidad Nacional de Colombia (UNAL)",
+          "description": "Me formé en estructuras de datos, análisis de algoritmos, diseño de bases de datos SQL, APIs, Arquitectura de software e ingeniería de software durante la carrera de Ingenieria de Sistemas y Computación.",
+          "tags": ["Algoritmos", "SQL", "APIs", "Arquitectura de software ", "Ingeniería de software"]
+        }
+      ],
+      "projectsHeading": "Proyectos",
+      "projects": [
+        {
+          "title": "NestJs Plantilla de autenticación",
+          "year": "2026 - En progreso",
+          "description": "Plantilla backend para empezar un proyecto en Nestjs con un módulo API seguro de autenticación",
+          "tags": ["Nest.js", "AJV (JSON Validator)", "PostgreSQL", "OWASP top 10", "OAuth", "JWT"],
+          "links": [
+            { "label": "Detalles", "url": "https://github.com/Dicarvajalb/Authentication-template-with-Nestjs" }
+          ]
+        },
+        {
+          "title": "Control de Vuelos con Microservicios",
+          "year": "2023",
+          "description": "Proyecto de pregrado para monitoreo de vuelos con notificaciones, mensajería, autenticacion y entrega segura con HTTPS. Se desarrolló con arquitectura de microservicios donde cuatro servicios se comunican mediante un API gateway.",
+          "tags": ["Flutter", "Java Spring Boot", "PostgreSQL", "Node.js", "Express.js", "Microservicios"],
+          "links": [
+            { "label": "Detalles", "url": "https://github.com/orgs/Arquisoft2023-2/repositories" }
+          ]
+        },
+        {
+          "title": "PathPhi - Rutas de Aprendizaje",
+          "year": "2021",
+          "description": "Plataforma web para visualizar cursos gratuitos en línea. Colaboré en el diseño del modelo de datos, seguiíprincipios de atomic design y colaboración basada en gitflow.",
+          "tags": ["React.js", "Express.js", "PostgreSQL", "Node.js", "Atomic Design"],
+          "links": [
+            { "label": "Detalles", "url": "#" }
+          ]
+        }
+        
+      ],
+      "skillsHeading": "Habilidades",
+      "skills": [
+        {
+          "category": "Frontend",
+          "items": ["React.js", "Solid.js", "Redux and Zustand", "Tailwind", "TypeScript", "Styled Components", "Sass", "Formik", "TanStack"]
+        },
+        {
+          "category": "Backend",
+          "items": ["NestJS", "Node.js", "Express.js", "Java Spring Boot", "OAuth", "API Design", "Microservices"]
+        },
+        {
+          "category": "Datos e Infraestructura",
+          "items": ["PostgreSQL", "Strapi CMS", "Nginx", "Docker", "AWS", "CI/CD"]
+        },
+        {
+          "category": "Flujo y Fundamentos",
+          "items": ["Agile", "Scrum", "GitHub", "Pruebas unitarias", "Pruebas de integración", "Algoritmos", "UML"]
+        }
+      ],
+      "contact": {
+        "sectionLabel": "Contacto",
+        "heading": "Construyamos software confiable para problemas reales.",
+        "description": "Abierto a oportunidades de ingeniería de software, equipos colaborativos de producto y proyectos con sistemas escalables o integraciones con IA.",
+        "emailLabel": "Correo",
+        "socialsLabel": "Perfiles",
+        "email": "diegocarvalejo@gmail.com",
+        "socials": [
+          {
+            "platform": "GitHub",
+            "url": "https://github.com/dicarvajalb",
+            "label": "github.com/dicarvajalb"
+          },
+          {
+            "platform": "LinkedIn",
+            "url": "https://linkedin.com/in/dicarvajalb",
+            "label": "linkedin.com/in/dicarvajalb"
+          }
+        ]
+      },
+      "footer": {
+        "rights": "Todos los derechos reservados.",
+        "builtWith": "Construido con SolidJS, TypeScript, Vite y Tailwind CSS."
+      }
+    }
   }
 }

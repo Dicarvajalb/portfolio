@@ -1,117 +1,208 @@
-import { createSignal, onMount, onCleanup } from "solid-js";
-import content from "../content/portfolio.json";
+import { For, createSignal, onCleanup, onMount } from "solid-js";
+import type { Locale, NavItem } from "../types/content";
 
-const sections = ["about", "experience", "projects", "contact"];
+type Theme = "light" | "dark";
 
-export default function Nav() {
-  const [scrolled, setScrolled] = createSignal(false);
-  const [activeSection, setActiveSection] = createSignal("");
+interface Props {
+  name: string;
+  items: NavItem[];
+  locale: Locale;
+  localeLabels: Record<Locale, string>;
+  theme: Theme;
+  onLocaleChange: (locale: Locale) => void;
+  onThemeToggle: () => void;
+}
+
+export default function Nav(props: Props) {
+  const [activeSection, setActiveSection] = createSignal(props.items[0]?.id ?? "");
   const [menuOpen, setMenuOpen] = createSignal(false);
+  const menuLabel = () => (props.locale === "es" ? "Abrir navegacion" : "Open navigation");
+  const themeLabel = () =>
+    props.locale === "es"
+      ? props.theme === "light"
+        ? "Activar tema oscuro"
+        : "Activar tema claro"
+      : props.theme === "light"
+        ? "Switch to dark mode"
+        : "Switch to light mode";
+  const themeButtonText = () =>
+    props.locale === "es"
+      ? props.theme === "light"
+        ? "Oscuro"
+        : "Claro"
+      : props.theme === "light"
+        ? "Dark"
+        : "Light";
+  const mobileThemeButtonText = () =>
+    props.locale === "es"
+      ? props.theme === "light"
+        ? "Modo oscuro"
+        : "Modo claro"
+      : props.theme === "light"
+        ? "Dark mode"
+        : "Light mode";
 
   onMount(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+    const observer = new IntersectionObserver(
+      (entries) => {
 
-      const sectionEls = sections
-        .map((id) => document.getElementById(id))
-        .filter(Boolean) as HTMLElement[];
+        const visibleEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-      for (let i = sectionEls.length - 1; i >= 0; i--) {
-        const el = sectionEls[i];
-        if (el.getBoundingClientRect().top <= 200) {
-          setActiveSection(sectionEls[i].id);
-          return;
+        if (visibleEntry?.target.id) {
+          setActiveSection(visibleEntry.target.id);
         }
-      }
-      setActiveSection("");
-    };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    onCleanup(() => window.removeEventListener("scroll", handleScroll));
+      },
+      {
+        rootMargin: "-35% 0px -45% 0px",
+        threshold: [0.2, 0.5, 0.8],
+      }
+    );
+
+    props.items.forEach((item) => {
+      const section = document.getElementById(item.id);
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    onCleanup(() => observer.disconnect());
   });
 
   return (
-    <header
-      class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
-      classList={{
-        "bg-[var(--bg)]/80 backdrop-blur-xl border-b border-[var(--border)]": scrolled(),
-        "bg-transparent": !scrolled(),
-      }}
-    >
-      <nav class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+    <header class="sticky top-0 z-50 border-b border-[var(--border)] bg-[color:var(--bg-elevated)]/90 backdrop-blur ">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 ">
         <a
-          href="#"
-          class="font-semibold text-[var(--fg)] tracking-tight text-lg transition-colors hover:text-[var(--accent)]"
+          href="#top"
+          class="text-base font-semibold tracking-[0.18em] text-[var(--fg)] uppercase"
         >
-          {content.hero.name.split(" ")[0]}
-          <span class="text-[var(--accent)]">.</span>
+          {props.name}
         </a>
 
-        {/* Desktop nav */}
-        <ul class="hidden items-center gap-8 md:flex">
-          {sections.map((section) => (
-            <li>
-              <a
-                href={`#${section}`}
-                class="text-sm uppercase tracking-widest transition-colors duration-300"
-                classList={{
-                  "text-[var(--accent)]": activeSection() === section,
-                  "text-[var(--muted)] hover:text-[var(--fg)]": activeSection() !== section,
-                }}
-              >
-                {section}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div class="hidden items-center gap-3 lg:flex">
+          <ul class="flex items-center gap-2 rounded-full border border-[var(--border)] bg-[color:var(--surface)]/92 px-2 py-2 shadow-[var(--shadow-soft)]">
+            <For each={props.items}>
+              {(item) => (
+                <li>
+                  <a
+                    href={`#${item.id}`}
+                    class="rounded-full truncate px-4 py-2 text-sm font-medium transition-colors "
+                    classList={{
+                      "bg-[var(--accent)] text-[var(--accent-contrast)]":
+                        activeSection() === item.id,
+                      "text-[var(--muted)] hover:text-[var(--fg)]":
+                        activeSection() !== item.id,
+                    }}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              )}
+            </For>
+          </ul>
 
-        {/* Mobile menu button */}
+          <div class="flex items-center rounded-full border border-[var(--border)] bg-[color:var(--surface)] p-1">
+            <For each={(["en", "es"] as const)}>
+              {(value) => (
+                <button
+                  type="button"
+                  class="rounded-full px-3 py-2 text-xs font-semibold tracking-[0.2em] transition-colors"
+                  classList={{
+                    "bg-[var(--fg)] text-[var(--bg)]": props.locale === value,
+                    "text-[var(--muted)] hover:text-[var(--fg)]": props.locale !== value,
+                  }}
+                  onClick={() => props.onLocaleChange(value)}
+                  aria-pressed={props.locale === value}
+                >
+                  {props.localeLabels[value]}
+                </button>
+              )}
+            </For>
+          </div>
+
+          <button
+            type="button"
+            class="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--border)] bg-[color:var(--surface)] px-4 text-sm font-semibold text-[var(--fg)] transition-colors hover:border-[var(--accent)]/40 hover:text-[var(--accent)]"
+            onClick={props.onThemeToggle}
+            aria-label={themeLabel()}
+            title={themeLabel()}
+          >
+            <span class="text-base" aria-hidden="true">
+              {props.theme === "light" ? "\u263E" : "\u2600"}
+            </span>
+            <span>{themeButtonText()}</span>
+          </button>
+        </div>
+
         <button
-          class="flex flex-col gap-1.5 md:hidden"
+          type="button"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[color:var(--surface)] text-[var(--fg)] lg:hidden"
           onClick={() => setMenuOpen(!menuOpen())}
-          aria-label="Toggle menu"
           aria-expanded={menuOpen()}
+          aria-label={menuLabel()}
         >
-          <span
-            class="block h-0.5 w-6 bg-[var(--fg)] transition-transform duration-300 origin-center"
-            classList={{ "rotate-45 translate-y-2": menuOpen() }}
-          />
-          <span
-            class="block h-0.5 w-6 bg-[var(--fg)] transition-opacity duration-300"
-            classList={{ "opacity-0": menuOpen() }}
-          />
-          <span
-            class="block h-0.5 w-6 bg-[var(--fg)] transition-transform duration-300 origin-center"
-            classList={{ "-rotate-45 -translate-y-2": menuOpen() }}
-          />
+          <span class="sr-only">{menuLabel()}</span>
+          <div class="space-y-1.5">
+            <span class="block h-0.5 w-5 bg-current" />
+            <span class="block h-0.5 w-5 bg-current" />
+            <span class="block h-0.5 w-5 bg-current" />
+          </div>
         </button>
       </nav>
 
-      {/* Mobile menu */}
       <div
-        class="overflow-hidden transition-all duration-500 md:hidden"
-        classList={{
-          "max-h-64 opacity-100": menuOpen(),
-          "max-h-0 opacity-0": !menuOpen(),
-        }}
+        class="border-t border-[var(--border)] bg-[color:var(--surface)] lg:hidden"
+        classList={{ hidden: !menuOpen() }}
       >
-        <ul class="flex flex-col gap-4 px-6 pb-6">
-          {sections.map((section) => (
-            <li>
+        <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:px-6">
+          <For each={props.items}>
+            {(item) => (
               <a
-                href={`#${section}`}
+                href={`#${item.id}`}
+                class="rounded-2xl px-4 py-3 text-sm font-medium text-[var(--muted)] transition-colors hover:bg-[color:var(--surface-strong)] hover:text-[var(--fg)]"
                 onClick={() => setMenuOpen(false)}
-                class="text-sm uppercase tracking-widest transition-colors duration-300"
-                classList={{
-                  "text-[var(--accent)]": activeSection() === section,
-                  "text-[var(--muted)] hover:text-[var(--fg)]": activeSection() !== section,
-                }}
               >
-                {section}
+                {item.label}
               </a>
-            </li>
-          ))}
-        </ul>
+            )}
+          </For>
+
+          <div class="flex gap-2 pt-2">
+            <For each={(["en", "es"] as const)}>
+              {(value) => (
+                <button
+                  type="button"
+                  class="rounded-full border border-[var(--border)] px-4 py-2 text-xs font-semibold tracking-[0.2em]"
+                  classList={{
+                    "bg-[var(--fg)] text-[var(--bg)]": props.locale === value,
+                    "text-[var(--muted)]": props.locale !== value,
+                  }}
+                  onClick={() => {
+                    props.onLocaleChange(value);
+                    setMenuOpen(false);
+                  }}
+                >
+                  {props.localeLabels[value]}
+                </button>
+              )}
+            </For>
+          </div>
+
+          <button
+            type="button"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--fg)]"
+            onClick={() => {
+              props.onThemeToggle();
+              setMenuOpen(false);
+            }}
+            aria-label={themeLabel()}
+          >
+            <span aria-hidden="true">{props.theme === "light" ? "\u263E" : "\u2600"}</span>
+            <span>{mobileThemeButtonText()}</span>
+          </button>
+        </div>
       </div>
     </header>
   );
